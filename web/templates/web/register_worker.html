@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Become a Worker | HomeKare</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #10b981;
+            --secondary: #059669;
+            --page-bg: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 50%, #f0fdf4 100%);
+            --glass-bg: rgba(255, 255, 255, 0.4);
+            --glass-border: rgba(255, 255, 255, 0.5);
+            --text-main: #1e1b4b;
+        }
+
+        body {
+            background: var(--page-bg);
+            background-attachment: fixed;
+            color: var(--text-main);
+            min-height: 100vh;
+        }
+
+        .glass {
+            background: var(--glass-bg);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .checkbox-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 1rem;
+        }
+
+        .checkbox-grid label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            padding: 0.75rem;
+            border-radius: 0.75rem;
+            background: rgba(255, 255, 255, 0.3);
+            border: 1px solid var(--glass-border);
+            transition: all 0.3s;
+        }
+
+        .checkbox-grid label:hover {
+            background: rgba(255, 255, 255, 0.5);
+        }
+
+        .checkbox-grid input:checked+span {
+            color: var(--primary);
+            font-weight: bold;
+        }
+
+        .checkbox-grid input {
+            accent-color: var(--primary);
+            width: 1.25rem;
+            height: 1.25rem;
+        }
+    </style>
+</head>
+
+<body class="p-6 md:p-12">
+    <nav class="container mx-auto flex justify-between items-center mb-12">
+        <a href="/" class="text-3xl font-bold gradient-text flex items-center gap-2">
+            <i class="fas fa-handshake"></i> HomeKare
+        </a>
+        <a href="/" class="text-gray-500 hover:text-emerald-600 transition font-bold flex items-center gap-2">
+            <i class="fas fa-arrow-left text-sm"></i> Back to Home
+        </a>
+    </nav>
+    <main class="container mx-auto max-w-4xl">
+        <div class="glass rounded-[3rem] overflow-hidden">
+            <div
+                class="bg-gradient-to-r from-emerald-600/10 to-emerald-600/10 p-12 text-center border-b border-white/20">
+                <span
+                    class="px-4 py-1 bg-emerald-100 text-emerald-600 rounded-full text-xs font-bold tracking-wider mb-4 inline-block">
+                    JOIN THE WORKER NETWORK
+                </span>
+                <h1 class="text-4xl md:text-5xl font-black mb-4">Grow Your Business <br> with <span
+                        class="gradient-text">HomeKare</span></h1>
+                <p class="text-gray-600 max-w-2xl mx-auto">Fill out the form below to start receiving local job
+                    requests.
+                    We'll review your application and help you get started.</p>
+            </div>
+            <form method="post" enctype="multipart/form-data" class="p-8 md:p-12 space-y-10">
+                {% csrf_token %}
+                <div class="space-y-6">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div
+                            class="w-10 h-10 bg-emerald-600 text-white rounded-xl flex items-center justify-center shadow-lg shadow-emerald-500/20">
+                            <i class="fas fa-user-tie"></i>
+                        </div>
+                        <h2 class="text-2xl font-bold">Personal Information</h2>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="space-y-2">
+                            <label class="text-xs font-bold text-gray-400 uppercase tracking-widest ml-1">Full
+                                Name</label>
+                            {{ form.full_name }}
+                            {% if form.full_name.errors %}
+                            <p class="text-red-500 text-xs">{{ form.full_name.errors.0 }}</p>
+                            {% endif %}
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-xs font-bold text-gray-400 uppercase tracking-widest ml-1">Email
+                                Address</label>
+                            {{ form.email }}
+                            {% if form.email.errors %}
+                            <p class="text-red-500 text-xs">{{ form.email.errors.0 }}</p>
+                            {% endif %}
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-xs font-bold text-gray-400 uppercase tracking-widest ml-1">Phone
+                                Number</label>
+                            {{ form.phone_number }}
+                            {% if form.phone_number.errors %}
+                            <p class="text-red-500 text-xs">{{ form.phone_number.errors.0 }}</p>
+                            {% endif %}
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-xs font-bold text-gray-400 uppercase tracking-widest ml-1">ID/Passport
+                                Number</label>
+                            {{ form.id_number }}
+                            {% if form.id_number.errors %}
+                            <p class="text-red-500 text-xs">{{ form.id_number.errors.0 }}</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <hr class="border-white/20">
+                <div class="space-y-6">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div
+                            class="w-10 h-10 bg-emerald-600 text-white rounded-xl flex items-center justify-center shadow-lg shadow-emerald-500/20">
+                            <i class="fas fa-briefcase"></i>
+                        </div>
+                        <h2 class="text-2xl font-bold">Worker Details</h2>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="space-y-2">
+                            <label class="text-xs font-bold text-gray-400 uppercase tracking-widest ml-1">Primary Area
+                                of Operation</label>
+                            {{ form.location }}
+                            {% if form.location.errors %}
+                            <p class="text-red-500 text-xs">{{ form.location.errors.0 }}</p>
+                            {% endif %}
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-xs font-bold text-gray-400 uppercase tracking-widest ml-1">Experience
+                                Level</label>
+                            {{ form.experience_level }}
+                            {% if form.experience_level.errors %}
+                            <p class="text-red-500 text-xs">{{ form.experience_level.errors.0 }}</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="space-y-4">
+                        <label class="text-xs font-bold text-gray-400 uppercase tracking-widest ml-1">Select Your
+                            Skills</label>
+                        <div class="checkbox-grid">
+                            {% for checkbox in form.skills %}
+                            <label>
+                                {{ checkbox.tag }}
+                                <span class="text-sm">{{ checkbox.choice_label }}</span>
+                            </label>
+                            {% endfor %}
+                        </div>
+                        {% if form.skills.errors %}
+                        <p class="text-red-500 text-xs">{{ form.skills.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+                <hr class="border-white/20">
+                <div class="space-y-6">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div
+                            class="w-10 h-10 bg-cyan-600 text-white rounded-xl flex items-center justify-center shadow-lg shadow-cyan-500/20">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <h2 class="text-2xl font-bold">Identity Verification</h2>
+                    </div>
+                    <div class="p-8 bg-white/40 border border-emerald-100 rounded-3xl space-y-4">
+                        <p class="text-sm text-gray-600 italic"><i
+                                class="fas fa-info-circle text-emerald-600 mr-2"></i>To maintain a safe community, we
+                            require all workers to upload a clear scan or photo of their ID card or Passport.</p>
+                        <div class="space-y-2">
+                            <label class="text-xs font-bold text-gray-400 uppercase tracking-widest ml-1">Upload
+                                ID/Passport Scan</label>
+                            {{ form.id_scan }}
+                            {% if form.id_scan.errors %}
+                            <p class="text-red-500 text-xs">{{ form.id_scan.errors.0 }}</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <button type="submit"
+                    class="w-full py-5 bg-gradient-to-r from-emerald-600 to-emerald-600 text-white rounded-[1.5rem] font-bold text-xl shadow-2xl shadow-emerald-500/30 hover:scale-[1.02] transition-all transform active:scale-95">
+                    Submit Worker Application
+                </button>
+                <p class="text-center text-xs text-gray-400">By submitting this form, you agree to HomeKare's
+                    Service Provider Terms and Privacy Policy.</p>
+            </form>
+        </div>
+    </main>
+    <footer class="container mx-auto py-12 text-center text-sm text-gray-400">
+        <p>&copy; 2026 HomeKare. Nairobi, Kenya.</p>
+    </footer>
+</body>
+
+</html>
