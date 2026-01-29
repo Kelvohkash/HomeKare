@@ -34,15 +34,12 @@
             <div class="flex-1 space-y-2">
                 <div class="flex items-center gap-3">
                     <span class="status-badge status-{{ booking.status }}">{{ booking.get_status_display }}</span>
-                    <span class="text-xs text-gray-400 font-bold tracking-widest uppercase">{{
-                        booking.created_at|date:"F d, Y" }}</span>
+                    <span class="text-xs text-gray-400 font-bold tracking-widest uppercase">{{ booking.created_at|date:"F d, Y" }}</span>
                 </div>
                 <h3 class="text-2xl font-bold text-slate-900">{{ booking.service.title }}</h3>
                 <div class="flex flex-wrap gap-4 text-sm text-gray-500 font-medium">
-                    <span class="flex items-center gap-2"><i class="fas fa-map-marker-alt text-emerald-400"></i> {{
-                        booking.location }}</span>
-                    <span class="flex items-center gap-2"><i class="fas fa-wallet text-emerald-400"></i> KSh {{
-                        booking.service.price|floatformat:0 }}</span>
+                    <span class="flex items-center gap-2"><i class="fas fa-map-marker-alt text-emerald-400"></i> {{ booking.location }}</span>
+                    <span class="flex items-center gap-2"><i class="fas fa-wallet text-emerald-400"></i> KSh {{ booking.service.price|floatformat:0 }}</span>
                 </div>
             </div>
 
