@@ -7,7 +7,11 @@ from .models import Service, HeroContent, Booking, Review, Worker, Category
 from .forms import WorkerRegistrationForm, ReviewForm, CustomSignupForm
 
 def index(request):
-    hero = HeroContent.objects.first()
+    try:
+        hero = HeroContent.objects.first()
+    except Exception:
+        hero = None
+    
     categories = Category.objects.all()
     services = Service.objects.all().select_related('category')
     context = {

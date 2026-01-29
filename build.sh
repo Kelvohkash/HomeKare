@@ -2,7 +2,16 @@
 # exit on error
 set -o errexit
 
+echo "===== Installing Python dependencies ====="
 python -m pip install -r requirements.txt
 
+echo "===== Collecting static files ====="
 python manage.py collectstatic --no-input
-python manage.py migrate
+
+echo "===== Running database migrations ====="
+python manage.py migrate --verbosity 2
+
+echo "===== Seeding initial data ====="
+python seed_data.py
+
+echo "===== Build completed successfully ====="
