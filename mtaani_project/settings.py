@@ -109,10 +109,10 @@ import dj_database_url
 DATABASES = {
     'default': dj_database_url.config(
         default=f"sqlite:///{BASE_DIR / 'db_new.sqlite3'}",
-        conn_max_age=600
+        conn_max_age=600,
+        ssl_require=True # Required for Supabase production
     )
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/6.0/ref/settings/#auth-password-validators
@@ -152,16 +152,14 @@ if USE_S3:
     AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
     AWS_STORAGE_BUCKET_NAME = os.environ.get('AWS_STORAGE_BUCKET_NAME')
     AWS_S3_ENDPOINT_URL = os.environ.get('AWS_S3_ENDPOINT_URL')
+    AWS_S3_REGION_NAME = os.environ.get('AWS_S3_REGION_NAME', 'eu-central-1')
     
-    # S3 Settings
-    AWS_S3_OBJECT_PARAMETERS = {
-        'CacheControl': 'max-age=86400',
-    }
-    AWS_DEFAULT_ACL = 'public-read'
-    AWS_S3_REGION_NAME = os.environ.get('AWS_S3_REGION_NAME', 'eu-central-1') # Adjust region as needed
+    # S3 Settings (Strict Supabase Compatibility)
     AWS_S3_SIGNATURE_VERSION = 's3v4'
     AWS_S3_ADDRESSING_STYLE = 'path'
     AWS_S3_FILE_OVERWRITE = False
+    AWS_QUERYSTRING_AUTH = False  # Set to False to use public URLs without tokens
+    AWS_DEFAULT_ACL = None        # Supabase doesn't support ACLs; manage via bucket settings
 
     STORAGES = {
         "default": {
@@ -172,14 +170,18 @@ if USE_S3:
                 "bucket_name": AWS_STORAGE_BUCKET_NAME,
                 "endpoint_url": AWS_S3_ENDPOINT_URL,
                 "region_name": AWS_S3_REGION_NAME,
-                "default_acl": "public-read",
+                "signature_version": "s3v4",
+                "default_acl": None,
+                "addressing_style": "path",
+                "querystring_auth": False,
             },
         },
         "staticfiles": {
             "BACKEND": "whitenoise.storage.CompressedStaticFilesStorage",
         },
     }
-    MEDIA_URL = f'{AWS_S3_ENDPOINT_URL}/{AWS_STORAGE_BUCKET_NAME}/'
+    # Use the public Supabase object URL for perfect compatibility
+    MEDIA_URL = f'{AWS_S3_ENDPOINT_URL.replace("/s3", "/object/public")}/{AWS_STORAGE_BUCKET_NAME}/'
 else:
     MEDIA_URL = '/media/'
     MEDIA_ROOT = BASE_DIR / 'media'
