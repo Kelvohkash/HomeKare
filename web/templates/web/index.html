@@ -224,7 +224,8 @@
                         {% endif %}
                     </h1>
                     <p class="text-lg text-gray-600 mb-6 max-w-xl">
-                        {{ hero.description|default:"Connect with thousands of verified local workers for repairs, gardening, cleaning, and more. Quality guaranteed." }}
+                        {{ hero.description|default:"Connect with thousands of verified local workers for repairs,
+                        gardening, cleaning, and more. Quality guaranteed." }}
                     </p>
 
                     <div
@@ -259,8 +260,7 @@
                             <div
                                 class="absolute -inset-1 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-[2.5rem] blur opacity-20 group-hover:opacity-40 transition duration-1000">
                             </div>
-                            <img src="{% if hero.image %}{{ hero.image.url }}{% else %}https://images.unsplash.com/photo-1621905235294-7500bed48cbc?auto=format&fit=crop&q=80&w=800{% endif %}"
-                                alt="Service Professional"
+                            <img src="/media/hero/green_hero_final.png" alt="Service Professional"
                                 class="relative rounded-[2.5rem] shadow-2xl float w-full aspect-[4/3] object-cover border-4 border-white">
                         </div>
 
@@ -376,7 +376,8 @@
                         <div>
                             <p class="text-xs text-gray-400 uppercase font-bold mb-1">Price</p>
                             <p class="text-xl font-bold text-emerald-600"><span
-                                    class="text-xs text-gray-400 font-medium">Starting from</span> KES {{ service.price }}</p>
+                                    class="text-xs text-gray-400 font-medium">Starting from</span> KES {{ service.price
+                                }}</p>
                         </div>
                     </div>
 
