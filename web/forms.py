@@ -29,20 +29,20 @@ class WorkerRegistrationForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         # Add Tailwind classes to all fields
-        standard_classes = "w-full pl-12 pr-5 py-4 bg-white/50 border border-purple-100 focus:border-purple-500/50 rounded-2xl outline-none focus:ring-4 focus:ring-purple-500/10 transition-all placeholder:text-gray-400"
+        standard_classes = "w-full pl-12 pr-5 py-4 bg-white/50 border border-emerald-100 focus:border-emerald-500/50 rounded-2xl outline-none focus:ring-4 focus:ring-emerald-500/10 transition-all placeholder:text-gray-400"
         for field in self.fields:
             if field != 'skills' and field != 'id_scan':
                 self.fields[field].widget.attrs.update({'class': standard_classes})
             elif field == 'id_scan':
-                self.fields[field].widget.attrs.update({'class': 'w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-purple-50 file:text-purple-700 hover:file:bg-purple-100'})
+                self.fields[field].widget.attrs.update({'class': 'w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100'})
 
 class ReviewForm(forms.ModelForm):
     class Meta:
         model = Review
         fields = ['rating', 'comment']
         widgets = {
-            'rating': forms.Select(attrs={'class': 'w-full px-5 py-3 bg-white/50 border border-purple-100 rounded-xl outline-none focus:border-purple-500/50 transition-all'}),
-            'comment': forms.Textarea(attrs={'class': 'w-full px-5 py-3 bg-white/50 border border-purple-100 rounded-xl outline-none focus:border-purple-500/50 transition-all', 'rows': 3, 'placeholder': 'Tell us about your experience...'}),
+            'rating': forms.Select(attrs={'class': 'w-full px-5 py-3 bg-white/50 border border-emerald-100 rounded-xl outline-none focus:border-emerald-500/50 transition-all'}),
+            'comment': forms.Textarea(attrs={'class': 'w-full px-5 py-3 bg-white/50 border border-emerald-100 rounded-xl outline-none focus:border-emerald-500/50 transition-all', 'rows': 3, 'placeholder': 'Tell us about your experience...'}),
         }
 
 class CustomSignupForm(UserCreationForm):
@@ -63,7 +63,7 @@ class CustomSignupForm(UserCreationForm):
     contact_preference = forms.ChoiceField(
         choices=UserProfile.CONTACT_PREFERENCE_CHOICES,
         label='How should we reach out to you?',
-        widget=forms.Select(attrs={'class': 'w-full px-5 py-3 bg-white/50 border border-purple-100 rounded-xl outline-none'})
+        widget=forms.Select(attrs={'class': 'w-full px-5 py-3 bg-white/50 border border-emerald-100 rounded-xl outline-none'})
     )
 
     class Meta(UserCreationForm.Meta):
@@ -72,7 +72,7 @@ class CustomSignupForm(UserCreationForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        standard_classes = "w-full pl-12 pr-5 py-4 bg-white/50 border border-purple-100 focus:border-purple-500/50 rounded-2xl outline-none focus:ring-4 focus:ring-purple-500/10 transition-all placeholder:text-gray-400"
+        standard_classes = "w-full pl-12 pr-5 py-4 bg-white/50 border border-emerald-100 focus:border-emerald-500/50 rounded-2xl outline-none focus:ring-4 focus:ring-emerald-500/10 transition-all placeholder:text-gray-400"
         
         # Style all fields
         for fieldname, field in self.fields.items():

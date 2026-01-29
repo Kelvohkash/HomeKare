@@ -1,0 +1,139 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}HomeKare{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <style>
+        :root {
+            --primary: #10b981;
+            --secondary: #059669;
+            --page-bg: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 50%, #f0fdf4 100%);
+            --glass-bg: rgba(255, 255, 255, 0.4);
+            --glass-border: rgba(255, 255, 255, 0.5);
+            --text-main: #1e1b4b;
+        }
+
+        body {
+            background: var(--page-bg);
+            background-attachment: fixed;
+            color: var(--text-main);
+            min-height: 100vh;
+        }
+
+        .glass {
+            background: var(--glass-bg);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .status-badge {
+            padding: 4px 12px;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .status-pending {
+            background: #fef3c7;
+            color: #d97706;
+        }
+
+        .status-matching {
+            background: #e0f2fe;
+            color: #0284c7;
+        }
+
+        .status-assigned {
+            background: #ecfdf5;
+            color: #059669;
+        }
+
+        .status-completed {
+            background: #dcfce7;
+            color: #16a34a;
+        }
+
+        .status-cancelled {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+    </style>
+    {% block extra_css %}{% endblock %}
+</head>
+
+<body class="p-4 md:p-12">
+    <nav class="container mx-auto flex justify-between items-center mb-12">
+        <a href="/" class="text-3xl font-bold gradient-text flex items-center gap-2">
+            <i class="fas fa-handshake"></i> HomeKare
+        </a>
+        <div class="flex items-center gap-6">
+            {% if user.is_authenticated %}
+            <a href="{% url 'my_bookings' %}"
+                class="{% if request.resolver_match.url_name == 'my_bookings' %}text-emerald-600{% else %}text-gray-500 hover:text-emerald-600{% endif %} transition font-bold flex items-center gap-2 text-sm md:text-base">
+                <i class="fas fa-calendar-check text-sm"></i>
+                <span class="hidden md:inline">My Bookings</span>
+            </a>
+            {% if user.worker_profile %}
+            <a href="{% url 'worker_dashboard' %}"
+                class="{% if request.resolver_match.url_name == 'worker_dashboard' %}text-emerald-600{% else %}text-gray-500 hover:text-emerald-600{% endif %} transition font-bold flex items-center gap-2 text-sm md:text-base">
+                <i class="fas fa-chart-line text-sm"></i>
+                <span class="hidden md:inline">Worker Dashboard</span>
+            </a>
+            {% endif %}
+            <div class="flex items-center gap-3 glass px-4 py-2 rounded-full border-white/40">
+                <div
+                    class="w-8 h-8 bg-emerald-600 rounded-full flex items-center justify-center text-white text-xs font-bold">
+                    {{ user.email|slice:":1"|upper }}
+                </div>
+            </div>
+            {% else %}
+            <a href="/" class="text-gray-500 hover:text-emerald-600 transition font-bold flex items-center gap-2">
+                <i class="fas fa-home text-sm"></i>
+                <span class="hidden md:inline">Home</span>
+            </a>
+            {% endif %}
+        </div>
+    </nav>
+
+    <main class="container mx-auto">
+        {% if messages %}
+        <div class="mb-8 space-y-4 max-w-4xl mx-auto">
+            {% for message in messages %}
+            <div
+                class="glass p-4 rounded-2xl border-white/40 flex items-center gap-3 {% if message.tags == 'error' %}text-red-600{% else %}text-emerald-600{% endif %} animate__animated animate__fadeIn">
+                <i
+                    class="fas {% if message.tags == 'error' %}fa-exclamation-circle{% else %}fa-check-circle{% endif %}"></i>
+                <p class="font-bold text-sm">{{ message }}</p>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="container mx-auto py-12 text-center text-sm text-gray-400">
+        <p>&copy; 2026 HomeKare. Nairobi, Kenya.</p>
+    </footer>
+
+    {% block extra_js %}{% endblock %}
+</body>
+
+</html>

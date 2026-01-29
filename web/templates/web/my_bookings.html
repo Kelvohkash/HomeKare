@@ -1,520 +1,399 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends "base.html" %}
+{% load static %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Bookings | HomeKare</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        :root {
-            --primary: #10b981;
-            --secondary: #059669;
-            --page-bg: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 50%, #f0fdf4 100%);
-            --glass-bg: rgba(255, 255, 255, 0.4);
-            --glass-border: rgba(255, 255, 255, 0.5);
-            --text-main: #1e1b4b;
-        }
+{% block title %}My Bookings | HomeKare{% endblock %}
 
-        body {
-            background: var(--page-bg);
-            background-attachment: fixed;
-            color: var(--text-main);
-            min-height: 100vh;
-        }
-
-        .glass {
-            background: var(--glass-bg);
-            backdrop-filter: blur(25px);
-            -webkit-backdrop-filter: blur(25px);
-            border: 1px solid var(--glass-border);
-            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
-        }
-
-        .gradient-text {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .status-badge {
-            padding: 4px 12px;
-            border-radius: 9999px;
-            font-size: 0.75rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-
-        .status-pending {
-            background: #fef3c7;
-            color: #d97706;
-        }
-
-        .status-matching {
-            background: #e0f2fe;
-            color: #0284c7;
-        }
-
-        .status-assigned {
-            background: #ecfdf5;
-            color: #059669;
-        }
-
-        .status-completed {
-            background: #dcfce7;
-            color: #16a34a;
-        }
-
-        .status-cancelled {
-            background: #fee2e2;
-            color: #dc2626;
-        }
-    </style>
-</head>
-
-<body class="p-4 md:p-12">
-    <nav class="container mx-auto flex justify-between items-center mb-12">
-        <a href="/" class="text-3xl font-bold gradient-text flex items-center gap-2">
-            <i class="fas fa-handshake"></i> HomeKare
+{% block content %}
+<div class="max-w-6xl mx-auto">
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-4">
+        <div>
+            <h1 class="text-4xl font-black mb-2">My Service <span class="gradient-text">History</span></h1>
+            <p class="text-gray-500">Track and manage all your home service requests in one place.</p>
+        </div>
+        <a href="/#services"
+            class="bg-emerald-600 text-white px-6 py-3 rounded-2xl font-bold shadow-lg shadow-emerald-500/20 hover:scale-105 transition transform active:scale-95">
+            <i class="fas fa-plus mr-2"></i> Book New Service
         </a>
-        <div class="flex items-center gap-6">
-            <a href="{% url 'my_bookings' %}" class="text-emerald-600 transition font-bold flex items-center gap-2">
-                <i class="fas fa-calendar-check text-sm"></i>
-                <span class="hidden md:inline">My Bookings</span>
-            </a>
-            {% if user.worker_profile %}
-            <a href="{% url 'worker_dashboard' %}"
-                class="text-gray-500 hover:text-emerald-600 transition font-bold flex items-center gap-2">
-                <i class="fas fa-chart-line text-sm"></i>
-                <span class="hidden md:inline">Worker Dashboard</span>
-            </a>
-            {% endif %}
-            <div class="flex items-center gap-3 glass px-4 py-2 rounded-full border-white/40">
-                <div
-                    class="w-8 h-8 bg-emerald-600 rounded-full flex items-center justify-center text-white text-xs font-bold">
-                    {{ user.email|slice:":1"|upper }}
-                </div>
-                <span class="text-sm font-medium hidden md:inline">{{ user.email|truncatechars:20 }}</span>
-            </div>
-        </div>
-    </nav>
+    </div>
 
-    <main class="container mx-auto max-w-6xl">
-        <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-4">
-            <div>
-                <h1 class="text-4xl font-black mb-2">My Service <span class="gradient-text">History</span></h1>
-                <p class="text-gray-500">Track and manage all your home service requests in one place.</p>
-            </div>
-            <a href="/#services"
-                class="bg-emerald-600 text-white px-6 py-3 rounded-2xl font-bold shadow-lg shadow-emerald-500/20 hover:scale-105 transition transform active:scale-95">
-                <i class="fas fa-plus mr-2"></i> Book New Service
-            </a>
-        </div>
-
-        {% if messages %}
-        <div class="mb-8 space-y-4">
-            {% for message in messages %}
+    <div class="grid grid-cols-1 gap-6">
+        {% for booking in bookings %}
+        <div
+            class="glass rounded-[2rem] p-6 md:p-8 flex flex-col md:flex-row gap-8 items-start md:items-center relative overflow-hidden group">
             <div
-                class="glass p-4 rounded-2xl border-white/40 flex items-center gap-3 {% if message.tags == 'error' %}text-red-600{% else %}text-emerald-600{% endif %}">
-                <i
-                    class="fas {% if message.tags == 'error' %}fa-exclamation-circle{% else %}fa-check-circle{% endif %}"></i>
-                <p class="font-bold text-sm">{{ message }}</p>
+                class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-emerald-500/5 to-emerald-500/5 rounded-bl-[100px] -z-10 group-hover:scale-110 transition duration-700">
             </div>
-            {% endfor %}
-        </div>
-        {% endif %}
 
-        <div class="grid grid-cols-1 gap-6">
-            {% for booking in bookings %}
+            <!-- Service Icon -->
             <div
-                class="glass rounded-[2rem] p-6 md:p-8 flex flex-col md:flex-row gap-8 items-start md:items-center relative overflow-hidden group">
-                <div
-                    class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-emerald-500/5 to-emerald-500/5 rounded-bl-[100px] -z-10 group-hover:scale-110 transition duration-700">
-                </div>
+                class="w-20 h-20 bg-white/50 rounded-3xl flex items-center justify-center text-3xl text-emerald-600 shadow-xl shadow-emerald-500/5 border border-white/40">
+                <i class="fas {{ booking.service.category.icon|default:'fa-tools' }}"></i>
+            </div>
 
-                <!-- Service Icon -->
-                <div
-                    class="w-20 h-20 bg-white/50 rounded-3xl flex items-center justify-center text-3xl text-emerald-600 shadow-xl shadow-emerald-500/5 border border-white/40">
-                    <i class="fas fa-tools"></i>
+            <!-- Info -->
+            <div class="flex-1 space-y-2">
+                <div class="flex items-center gap-3">
+                    <span class="status-badge status-{{ booking.status }}">{{ booking.get_status_display }}</span>
+                    <span class="text-xs text-gray-400 font-bold tracking-widest uppercase">{{
+                        booking.created_at|date:"F d, Y" }}</span>
                 </div>
-
-                <!-- Info -->
-                <div class="flex-1 space-y-2">
-                    <div class="flex items-center gap-3">
-                        <span class="status-badge status-{{ booking.status }}">{{ booking.get_status_display }}</span>
-                        <span class="text-xs text-gray-400 font-bold tracking-widest uppercase">{{
-                            booking.created_at|date:"F d, Y" }}</span>
-                    </div>
-                    <h3 class="text-2xl font-bold text-slate-900">{{ booking.service.title }}</h3>
-                    <div class="flex flex-wrap gap-4 text-sm text-gray-500 font-medium">
-                        <span class="flex items-center gap-2"><i class="fas fa-map-marker-alt text-emerald-400"></i> {{
-                            booking.location }}</span>
-                        <span class="flex items-center gap-2"><i class="fas fa-wallet text-emerald-400"></i> KSh {{
-                            booking.service.price|floatformat:0 }}</span>
-                    </div>
-                </div>
-
-                <!-- Assigned Worker -->
-                {% if booking.assigned_worker %}
-                <div
-                    class="w-full md:w-auto p-4 bg-white/40 rounded-2xl border border-white/40 flex items-center gap-4">
-                    <div
-                        class="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center font-bold">
-                        {{ booking.assigned_worker.full_name|slice:":1" }}
-                    </div>
-                    <div>
-                        <p class="text-[10px] uppercase tracking-widest font-black text-gray-400">Assigned Worker
-                        </p>
-                        <p class="font-bold text-slate-800">{{ booking.assigned_worker.full_name }}</p>
-                    </div>
-                </div>
-                {% endif %}
-
-                <!-- Actions -->
-                <div class="w-full md:w-auto flex flex-col gap-3">
-                    {% if booking.status == 'completed' %}
-                    {% if booking.is_paid %}
-                    <div class="text-right">
-                        <span
-                            class="bg-green-100 text-green-700 px-4 py-2 rounded-xl text-sm font-bold border border-green-200 flex items-center gap-2 mb-2 justify-end">
-                            <i class="fas fa-check-circle"></i> Paid
-                        </span>
-                        {% if booking.review %}
-                        <div class="flex items-center gap-1 text-amber-400 justify-end">
-                            {% for i in "12345" %}
-                            <i
-                                class="fas fa-star {% if forloop.counter > booking.review.rating %}text-gray-200{% endif %}"></i>
-                            {% endfor %}
-                        </div>
-                        {% endif %}
-                    </div>
-                    {% else %}
-                    {% if booking.payment and booking.payment.status == 'pending' %}
-                    <div class="flex flex-col items-center gap-3">
-                        <button onclick="checkPaymentStatus('{{ booking.id }}', this)"
-                            data-booking-id="{{ booking.id }}"
-                            class="payment-poll-btn bg-blue-600 text-white px-6 py-3 rounded-xl font-bold hover:bg-blue-700 transition shadow-lg shadow-blue-500/20 text-center flex items-center justify-center gap-2">
-                            <i class="fas fa-sync-alt"></i> Check Payment Status
-                        </button>
-                        <p
-                            class="text-[10px] text-blue-500 font-bold bg-blue-50 px-3 py-1 rounded-lg animate-pulse uppercase tracking-wider">
-                            <i class="fas fa-circle-notch fa-spin mr-1"></i> Auto-verifying...
-                        </p>
-                    </div>
-                    {% elif booking.review %}
-                    <button
-                        onclick="openPaymentModal('{{ booking.id }}', '{{ booking.service.title }}', '{{ booking.agreed_price|default:0 }}')"
-                        class="bg-emerald-600 text-white px-6 py-3 rounded-xl font-bold hover:bg-emerald-700 transition shadow-lg shadow-emerald-500/20 text-center flex items-center justify-center gap-2 animate-pulse">
-                        <i class="fas fa-wallet"></i> Pay KES {{ booking.agreed_price|default:"--" }}
-                    </button>
-                    {% else %}
-                    <button
-                        onclick="openReviewModal('{{ booking.id }}', '{{ booking.service.title }}', '{{ booking.assigned_worker.full_name }}')"
-                        class="bg-white text-emerald-600 border-2 border-emerald-100 px-6 py-3 rounded-xl font-bold hover:bg-emerald-50 transition shadow-sm text-center">
-                        Review to Pay
-                    </button>
-                    {% endif %}
-                    {% endif %}
-                    {% elif booking.status == 'pending' or booking.status == 'matching' %}
-                    <p class="text-xs text-emerald-600 font-bold bg-emerald-50 px-4 py-2 rounded-lg text-center"><i
-                            class="fas fa-spinner fa-spin mr-2"></i> We're finding the best Worker for you</p>
-                    {% endif %}
+                <h3 class="text-2xl font-bold text-slate-900">{{ booking.service.title }}</h3>
+                <div class="flex flex-wrap gap-4 text-sm text-gray-500 font-medium">
+                    <span class="flex items-center gap-2"><i class="fas fa-map-marker-alt text-emerald-400"></i> {{
+                        booking.location }}</span>
+                    <span class="flex items-center gap-2"><i class="fas fa-wallet text-emerald-400"></i> KSh {{
+                        booking.service.price|floatformat:0 }}</span>
                 </div>
             </div>
-            {% empty %}
-            <div class="glass rounded-[3rem] p-20 text-center space-y-6">
+
+            <!-- Assigned Worker -->
+            {% if booking.assigned_worker %}
+            <div class="w-full md:w-auto p-4 bg-white/40 rounded-2xl border border-white/40 flex items-center gap-4">
                 <div
-                    class="w-24 h-24 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto text-4xl">
-                    <i class="fas fa-calendar-times"></i>
+                    class="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center font-bold">
+                    {{ booking.assigned_worker.full_name|slice:":1" }}
                 </div>
                 <div>
-                    <h3 class="text-2xl font-bold mb-2">No bookings yet</h3>
-                    <p class="text-gray-500">Your service requests will appear here once you make your first booking.
+                    <p class="text-[10px] uppercase tracking-widest font-black text-gray-400">Assigned Worker
                     </p>
+                    <p class="font-bold text-slate-800">{{ booking.assigned_worker.full_name }}</p>
                 </div>
-                <a href="/#services"
-                    class="inline-block bg-emerald-600 text-white px-8 py-4 rounded-2xl font-bold">Explore Services</a>
             </div>
-            {% endfor %}
-        </div>
-    </main>
+            {% endif %}
 
-    <!-- Review Modal -->
-    <div id="review-modal"
-        class="fixed inset-0 z-[100] hidden items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate__animated animate__fadeIn">
-        <div class="glass max-w-lg w-full rounded-[2.5rem] overflow-hidden shadow-2xl scale-95 transition-transform duration-300"
-            id="modal-content">
-            <div class="bg-gradient-to-r from-emerald-600 to-emerald-600 p-8 text-white relative">
-                <button onclick="closeReviewModal()"
-                    class="absolute top-6 right-6 text-white/80 hover:text-white transition">
-                    <i class="fas fa-times text-xl"></i>
-                </button>
-                <h2 class="text-2xl font-black mb-2">How was the job?</h2>
-                <p class="text-white/80 text-sm">Rate <span id="review-worker-name" class="font-bold underline"></span>
-                    for
-                    their work on <span id="review-service-name" class="font-bold"></span>.</p>
-            </div>
-            <form id="review-form" method="POST" action="" class="p-8 space-y-6">
-                {% csrf_token %}
-                <div class="space-y-3">
-                    <label class="text-xs font-black text-gray-400 uppercase tracking-widest ml-1">Your Rating</label>
-                    <div class="flex gap-4 justify-between" id="star-rating">
-                        <input type="hidden" name="rating" id="rating-input" required>
+            <!-- Actions -->
+            <div class="w-full md:w-auto flex flex-col gap-3">
+                {% if booking.status == 'completed' %}
+                {% if booking.is_paid %}
+                <div class="text-right">
+                    <span
+                        class="bg-green-100 text-green-700 px-4 py-2 rounded-xl text-sm font-bold border border-green-200 flex items-center gap-2 mb-2 justify-end">
+                        <i class="fas fa-check-circle"></i> Paid
+                    </span>
+                    {% if booking.review %}
+                    <div class="flex items-center gap-1 text-amber-400 justify-end">
                         {% for i in "12345" %}
-                        <button type="button" onclick="setRating('{{ forloop.counter }}');"
-                            class="star-btn w-12 h-12 rounded-xl bg-gray-50 text-gray-400 border border-gray-100 flex items-center justify-center text-xl hover:bg-amber-50 hover:text-amber-500 transition-all hover:scale-110"
-                            data-val="{{ forloop.counter }}">
-                            <i class="fas fa-star"></i>
-                        </button>
+                        <i
+                            class="fas fa-star {% if forloop.counter > booking.review.rating %}text-gray-200{% endif %}"></i>
                         {% endfor %}
                     </div>
+                    {% endif %}
                 </div>
-                <div class="space-y-3">
-                    <label class="text-xs font-black text-gray-400 uppercase tracking-widest ml-1">Comments</label>
-                    <textarea name="comment" required rows="4"
-                        class="w-full px-5 py-4 bg-white/50 border border-emerald-100 rounded-2xl outline-none focus:border-emerald-500/50 transition-all placeholder:text-gray-400"
-                        placeholder="Share your experience with this worker..."></textarea>
+                {% else %}
+                {% if booking.payment and booking.payment.status == 'pending' %}
+                <div class="flex flex-col items-center gap-3">
+                    <button onclick="checkPaymentStatus('{{ booking.id }}', this)" data-booking-id="{{ booking.id }}"
+                        class="payment-poll-btn bg-blue-600 text-white px-6 py-3 rounded-xl font-bold hover:bg-blue-700 transition shadow-lg shadow-blue-500/20 text-center flex items-center justify-center gap-2">
+                        <i class="fas fa-sync-alt"></i> Check Payment Status
+                    </button>
+                    <p
+                        class="text-[10px] text-blue-500 font-bold bg-blue-50 px-3 py-1 rounded-lg animate-pulse uppercase tracking-wider">
+                        <i class="fas fa-circle-notch fa-spin mr-1"></i> Auto-verifying...
+                    </p>
                 </div>
-                <button type="submit"
-                    class="w-full py-5 bg-gradient-to-r from-emerald-600 to-emerald-600 text-white rounded-2xl font-bold text-lg shadow-xl shadow-emerald-500/20 hover:scale-[1.02] transition transform active:scale-95">
-                    Submit Feedback
+                {% elif booking.review %}
+                <button
+                    onclick="openPaymentModal('{{ booking.id }}', '{{ booking.service.title }}', '{{ booking.agreed_price|default:0 }}')"
+                    class="bg-emerald-600 text-white px-6 py-3 rounded-xl font-bold hover:bg-emerald-700 transition shadow-lg shadow-emerald-500/20 text-center flex items-center justify-center gap-2 animate-pulse">
+                    <i class="fas fa-wallet"></i> Pay KES {{ booking.agreed_price|default:"--" }}
+                </button>
+                {% else %}
+                <button
+                    onclick="openReviewModal('{{ booking.id }}', '{{ booking.service.title }}', '{{ booking.assigned_worker.full_name }}')"
+                    class="bg-white text-emerald-600 border-2 border-emerald-100 px-6 py-3 rounded-xl font-bold hover:bg-emerald-50 transition shadow-sm text-center">
+                    Review to Pay
+                </button>
+                {% endif %}
+                {% endif %}
+                {% elif booking.status == 'pending' or booking.status == 'matching' %}
+                <p class="text-xs text-emerald-600 font-bold bg-emerald-50 px-4 py-2 rounded-lg text-center"><i
+                        class="fas fa-spinner fa-spin mr-2"></i> We're finding the best Worker for you</p>
+                {% endif %}
+            </div>
+        </div>
+        {% empty %}
+        <div class="glass rounded-[3rem] p-20 text-center space-y-6">
+            <div
+                class="w-24 h-24 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto text-4xl">
+                <i class="fas fa-calendar-times"></i>
+            </div>
+            <div>
+                <h3 class="text-2xl font-bold mb-2">No bookings yet</h3>
+                <p class="text-gray-500">Your service requests will appear here once you make your first booking.
+                </p>
+            </div>
+            <a href="/#services" class="inline-block bg-emerald-600 text-white px-8 py-4 rounded-2xl font-bold">Explore
+                Services</a>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Review Modal -->
+<div id="review-modal"
+    class="fixed inset-0 z-[100] hidden items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate__animated animate__fadeIn">
+    <div class="glass max-w-lg w-full rounded-[2.5rem] overflow-hidden shadow-2xl scale-95 transition-transform duration-300"
+        id="modal-content">
+        <div class="bg-gradient-to-r from-emerald-600 to-emerald-600 p-8 text-white relative">
+            <button onclick="closeReviewModal()"
+                class="absolute top-6 right-6 text-white/80 hover:text-white transition">
+                <i class="fas fa-times text-xl"></i>
+            </button>
+            <h2 class="text-2xl font-black mb-2">How was the job?</h2>
+            <p class="text-white/80 text-sm">Rate <span id="review-worker-name" class="font-bold underline"></span>
+                for
+                their work on <span id="review-service-name" class="font-bold"></span>.</p>
+        </div>
+        <form id="review-form" method="POST" action="" class="p-8 space-y-6">
+            {% csrf_token %}
+            <div class="space-y-3">
+                <label class="text-xs font-black text-gray-400 uppercase tracking-widest ml-1">Your Rating</label>
+                <div class="flex gap-4 justify-between" id="star-rating">
+                    <input type="hidden" name="rating" id="rating-input" required>
+                    {% for i in "12345" %}
+                    <button type="button" onclick="setRating('{{ forloop.counter }}');"
+                        class="star-btn w-12 h-12 rounded-xl bg-gray-50 text-gray-400 border border-gray-100 flex items-center justify-center text-xl hover:bg-amber-50 hover:text-amber-500 transition-all hover:scale-110"
+                        data-val="{{ forloop.counter }}">
+                        <i class="fas fa-star"></i>
+                    </button>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="space-y-3">
+                <label class="text-xs font-black text-gray-400 uppercase tracking-widest ml-1">Comments</label>
+                <textarea name="comment" required rows="4"
+                    class="w-full px-5 py-4 bg-white/50 border border-emerald-100 rounded-2xl outline-none focus:border-emerald-500/50 transition-all placeholder:text-gray-400"
+                    placeholder="Share your experience with this worker..."></textarea>
+            </div>
+            <button type="submit"
+                class="w-full py-5 bg-gradient-to-r from-emerald-600 to-emerald-600 text-white rounded-2xl font-bold text-lg shadow-xl shadow-emerald-500/20 hover:scale-[1.02] transition transform active:scale-95">
+                Submit Feedback
+            </button>
+        </form>
+    </div>
+</div>
+
+<!-- Payment Modal -->
+<div id="payment-modal"
+    class="fixed inset-0 z-[100] hidden items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate__animated animate__fadeIn">
+    <div class="bg-white max-w-sm w-full rounded-[2.5rem] overflow-hidden shadow-2xl relative">
+        <button onclick="closePaymentModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
+            <i class="fas fa-times text-xl"></i>
+        </button>
+
+        <div class="p-8 text-center">
+            <div
+                class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6 text-green-600 text-3xl">
+                <i class="fas fa-mobile-alt"></i>
+            </div>
+            <h2 class="text-2xl font-black text-slate-900 mb-2">M-Pesa Payment</h2>
+            <p class="text-gray-500 mb-6">Pay for <span id="payment-service" class="font-bold text-slate-800"></span>
+            </p>
+
+            <form id="payment-form" onsubmit="handlePayment(event)" class="space-y-4">
+                <input type="hidden" id="payment-booking-id">
+                <div class="bg-gray-50 p-4 rounded-xl border border-gray-100 mb-4">
+                    <p class="text-xs font-bold text-gray-400 uppercase tracking-widest">Amount to Pay</p>
+                    <p class="text-3xl font-black text-slate-900">KES <span id="payment-amount"></span></p>
+                </div>
+
+                <div>
+                    <label
+                        class="block text-left text-xs font-bold text-gray-400 uppercase tracking-widest ml-1 mb-1">M-Pesa
+                        Phone Number</label>
+                    <input type="tel" id="payment-phone" required placeholder="0712345678"
+                        value="{{ user.profile.phone_number }}"
+                        class="w-full px-5 py-4 bg-white border border-emerald-100 rounded-2xl outline-none focus:border-emerald-500/50 focus:ring-4 focus:ring-emerald-500/10 transition-all font-bold text-lg tracking-wide text-center">
+                </div>
+
+                <button type="submit" id="pay-btn"
+                    class="w-full py-4 bg-[#00D158] text-white rounded-2xl font-bold text-lg shadow-xl shadow-green-500/20 hover:scale-[1.02] transition transform active:scale-95 flex items-center justify-center gap-2">
+                    <span>Pay Now</span> <i class="fas fa-arrow-right"></i>
                 </button>
             </form>
         </div>
-    </div>
-
-    <!-- Payment Modal -->
-    <div id="payment-modal"
-        class="fixed inset-0 z-[100] hidden items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate__animated animate__fadeIn">
-        <div class="bg-white max-w-sm w-full rounded-[2.5rem] overflow-hidden shadow-2xl relative">
-            <button onclick="closePaymentModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
-                <i class="fas fa-times text-xl"></i>
-            </button>
-
-            <div class="p-8 text-center">
-                <div
-                    class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6 text-green-600 text-3xl">
-                    <i class="fas fa-mobile-alt"></i>
-                </div>
-                <h2 class="text-2xl font-black text-slate-900 mb-2">M-Pesa Payment</h2>
-                <p class="text-gray-500 mb-6">Pay for <span id="payment-service"
-                        class="font-bold text-slate-800"></span></p>
-
-                <form id="payment-form" onsubmit="handlePayment(event)" class="space-y-4">
-                    <input type="hidden" id="payment-booking-id">
-                    <div class="bg-gray-50 p-4 rounded-xl border border-gray-100 mb-4">
-                        <p class="text-xs font-bold text-gray-400 uppercase tracking-widest">Amount to Pay</p>
-                        <p class="text-3xl font-black text-slate-900">KES <span id="payment-amount"></span></p>
-                    </div>
-
-                    <div>
-                        <label
-                            class="block text-left text-xs font-bold text-gray-400 uppercase tracking-widest ml-1 mb-1">M-Pesa
-                            Phone Number</label>
-                        <input type="tel" id="payment-phone" required placeholder="0712345678"
-                            value="{{ user.profile.phone_number }}"
-                            class="w-full px-5 py-4 bg-white border border-emerald-100 rounded-2xl outline-none focus:border-emerald-500/50 focus:ring-4 focus:ring-emerald-500/10 transition-all font-bold text-lg tracking-wide text-center">
-                    </div>
-
-                    <button type="submit" id="pay-btn"
-                        class="w-full py-4 bg-[#00D158] text-white rounded-2xl font-bold text-lg shadow-xl shadow-green-500/20 hover:scale-[1.02] transition transform active:scale-95 flex items-center justify-center gap-2">
-                        <span>Pay Now</span> <i class="fas fa-arrow-right"></i>
-                    </button>
-                </form>
-            </div>
-            <!-- Mpesa footer stripe -->
-            <div class="h-2 w-full flex">
-                <div class="h-full w-1/3 bg-[#00D158]"></div>
-                <div class="h-full w-1/3 bg-[#C60B1E]"></div>
-                <div class="h-full w-1/3 bg-black"></div>
-            </div>
+        <!-- Mpesa footer stripe -->
+        <div class="h-2 w-full flex">
+            <div class="h-full w-1/3 bg-[#00D158]"></div>
+            <div class="h-full w-1/3 bg-[#C60B1E]"></div>
+            <div class="h-full w-1/3 bg-black"></div>
         </div>
     </div>
+</div>
+{% endblock %}
 
-    <script>
-        // ... (Existing Review Modal Functions) ...
+{% block extra_js %}
+<script>
+    function openPaymentModal(id, title, price) {
+        document.getElementById('payment-booking-id').value = id;
+        document.getElementById('payment-service').textContent = title;
+        document.getElementById('payment-amount').textContent = price;
 
-        function openPaymentModal(id, title, price) {
-            document.getElementById('payment-booking-id').value = id;
-            document.getElementById('payment-service').textContent = title;
-            document.getElementById('payment-amount').textContent = price;
+        const modal = document.getElementById('payment-modal');
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+    }
 
-            const modal = document.getElementById('payment-modal');
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
-        }
+    function closePaymentModal() {
+        const modal = document.getElementById('payment-modal');
+        modal.classList.remove('flex');
+        modal.classList.add('hidden');
+    }
 
-        function closePaymentModal() {
-            const modal = document.getElementById('payment-modal');
-            modal.classList.remove('flex');
-            modal.classList.add('hidden');
-        }
+    async function handlePayment(e) {
+        e.preventDefault();
+        const btn = document.getElementById('pay-btn');
+        const originalText = btn.innerHTML;
+        const bookingId = document.getElementById('payment-booking-id').value;
+        const phone = document.getElementById('payment-phone').value;
 
-        async function handlePayment(e) {
-            e.preventDefault();
-            const btn = document.getElementById('pay-btn');
-            const originalText = btn.innerHTML;
-            const bookingId = document.getElementById('payment-booking-id').value;
-            const phone = document.getElementById('payment-phone').value;
+        btn.disabled = true;
+        btn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Processing...`;
 
-            btn.disabled = true;
-            btn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Processing...`;
+        try {
+            const response = await fetch(`/initiate-payment/${bookingId}/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                body: `phone_number=${encodeURIComponent(phone)}`
+            });
 
-            try {
-                const response = await fetch(`/initiate-payment/${bookingId}/`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                        'X-CSRFToken': '{{ csrf_token }}'
-                    },
-                    body: `phone_number=${encodeURIComponent(phone)}`
-                });
+            const data = await response.json();
 
-                const data = await response.json();
-
-                if (data.status === 'success') {
-                    btn.innerHTML = `<i class="fas fa-check"></i> Success!`;
-                    btn.classList.add('bg-green-600');
-                    setTimeout(() => {
-                        window.location.reload();
-                    }, 1500);
-                } else {
-                    alert('Payment Error: ' + data.message);
-                    btn.disabled = false;
-                    btn.innerHTML = originalText;
-                }
-            } catch (err) {
-                console.error(err);
-                alert('Network error occurred.');
+            if (data.status === 'success') {
+                btn.innerHTML = `<i class="fas fa-check"></i> Success!`;
+                btn.classList.add('bg-green-600');
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1500);
+            } else {
+                alert('Payment Error: ' + data.message);
                 btn.disabled = false;
                 btn.innerHTML = originalText;
             }
+        } catch (err) {
+            console.error(err);
+            alert('Network error occurred.');
+            btn.disabled = false;
+            btn.innerHTML = originalText;
         }
+    }
 
-        // ...
-        function openReviewModal(bookingId, serviceTitle, proName) {
-            const modal = document.getElementById('review-modal');
-            const form = document.getElementById('review-form');
-            const proNameEl = document.getElementById('review-worker-name');
-            const serviceNameEl = document.getElementById('review-service-name');
-            const modalContent = document.getElementById('modal-content');
+    function openReviewModal(bookingId, serviceTitle, proName) {
+        const modal = document.getElementById('review-modal');
+        const form = document.getElementById('review-form');
+        const proNameEl = document.getElementById('review-worker-name');
+        const serviceNameEl = document.getElementById('review-service-name');
+        const modalContent = document.getElementById('modal-content');
 
-            form.action = `/review/${bookingId}/`;
-            proNameEl.textContent = proName;
-            serviceNameEl.textContent = serviceTitle;
+        form.action = `/review/${bookingId}/`;
+        proNameEl.textContent = proName;
+        serviceNameEl.textContent = serviceTitle;
 
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
-            setTimeout(() => {
-                modalContent.classList.remove('scale-95');
-                modalContent.classList.add('scale-100');
-            }, 10);
-        }
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+        setTimeout(() => {
+            modalContent.classList.remove('scale-95');
+            modalContent.classList.add('scale-100');
+        }, 10);
+    }
 
-        function closeReviewModal() {
-            const modal = document.getElementById('review-modal');
-            const modalContent = document.getElementById('modal-content');
+    function closeReviewModal() {
+        const modal = document.getElementById('review-modal');
+        const modalContent = document.getElementById('modal-content');
 
-            modalContent.classList.remove('scale-100');
-            modalContent.classList.add('scale-95');
-            setTimeout(() => {
-                modal.classList.remove('flex');
-                modal.classList.add('hidden');
-            }, 300);
-        }
+        modalContent.classList.remove('scale-100');
+        modalContent.classList.add('scale-95');
+        setTimeout(() => {
+            modal.classList.remove('flex');
+            modal.classList.add('hidden');
+        }, 300);
+    }
 
-        function setRating(val) {
-            document.getElementById('rating-input').value = val;
-            const stars = document.querySelectorAll('.star-btn');
-            stars.forEach(s => {
-                const sVal = parseInt(s.getAttribute('data-val'));
-                if (sVal <= val) {
-                    s.classList.remove('bg-gray-50', 'text-gray-400');
-                    s.classList.add('bg-amber-100', 'text-amber-500', 'border-amber-200');
-                } else {
-                    s.classList.add('bg-gray-50', 'text-gray-400');
-                    s.classList.remove('bg-amber-100', 'text-amber-500', 'border-amber-200');
-                }
-            });
-        }
-        // Auto-start polling for any pending payment buttons on page load
-        document.addEventListener('DOMContentLoaded', () => {
-            const pendingBtns = document.querySelectorAll('.payment-poll-btn');
-            pendingBtns.forEach(btn => {
-                const bookingId = btn.getAttribute('data-booking-id');
-                if (bookingId) {
-                    startPolling(bookingId, btn);
-                }
-            });
+    function setRating(val) {
+        document.getElementById('rating-input').value = val;
+        const stars = document.querySelectorAll('.star-btn');
+        stars.forEach(s => {
+            const sVal = parseInt(s.getAttribute('data-val'));
+            if (sVal <= val) {
+                s.classList.remove('bg-gray-50', 'text-gray-400');
+                s.classList.add('bg-amber-100', 'text-amber-500', 'border-amber-200');
+            } else {
+                s.classList.add('bg-gray-50', 'text-gray-400');
+                s.classList.remove('bg-amber-100', 'text-amber-500', 'border-amber-200');
+            }
         });
+    }
 
-        function startPolling(bookingId, btn) {
-            // Check immediately then every 5 seconds
-            checkPaymentStatus(bookingId, btn, true);
+    document.addEventListener('DOMContentLoaded', () => {
+        const pendingBtns = document.querySelectorAll('.payment-poll-btn');
+        pendingBtns.forEach(btn => {
+            const bookingId = btn.getAttribute('data-booking-id');
+            if (bookingId) {
+                startPolling(bookingId, btn);
+            }
+        });
+    });
 
-            const pollInterval = setInterval(async () => {
-                const isComplete = await checkPaymentStatus(bookingId, btn, true);
-                if (isComplete) {
-                    clearInterval(pollInterval);
-                }
-            }, 5000); // Poll every 5 seconds
+    function startPolling(bookingId, btn) {
+        checkPaymentStatus(bookingId, btn, true);
+        const pollInterval = setInterval(async () => {
+            const isComplete = await checkPaymentStatus(bookingId, btn, true);
+            if (isComplete) {
+                clearInterval(pollInterval);
+            }
+        }, 5000);
+        setTimeout(() => clearInterval(pollInterval), 300000);
+    }
 
-            // Stop polling after 5 minutes to save resources
-            setTimeout(() => clearInterval(pollInterval), 300000);
+    async function checkPaymentStatus(bookingId, btn, silent = false) {
+        const originalText = btn.getAttribute('data-original-text') || btn.innerHTML;
+        if (!btn.getAttribute('data-original-text')) {
+            btn.setAttribute('data-original-text', originalText);
         }
 
-        async function checkPaymentStatus(bookingId, btn, silent = false) {
-            const originalText = btn.getAttribute('data-original-text') || btn.innerHTML;
-            if (!btn.getAttribute('data-original-text')) {
-                btn.setAttribute('data-original-text', originalText);
-            }
+        if (!silent) {
+            btn.disabled = true;
+            btn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Checking...`;
+        }
 
-            if (!silent) {
-                btn.disabled = true;
-                btn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Checking...`;
-            }
+        try {
+            const response = await fetch(`/check-payment-status/${bookingId}/`);
+            const data = await response.json();
 
-            try {
-                const response = await fetch(`/check-payment-status/${bookingId}/`);
-                const data = await response.json();
-
-                if (data.status === 'success') {
-                    btn.innerHTML = `<i class="fas fa-check"></i> ${data.message}`;
-                    btn.classList.replace('bg-blue-600', 'bg-green-600');
-                    setTimeout(() => {
-                        window.location.reload();
-                    }, 1500);
-                    return true; // Stop polling
-                } else if (data.status === 'pending') {
-                    if (!silent) {
-                        alert(data.message);
-                        btn.disabled = false;
-                        btn.innerHTML = originalText;
-                    }
-                    // For polling, just keep state as is
-                    return false; // Continue polling
-                } else {
-                    if (!silent) {
-                        alert('Error: ' + data.message);
-                        btn.disabled = false;
-                        btn.innerHTML = originalText;
-                    }
-                    return true; // Stop polling on error
-                }
-            } catch (err) {
-                console.error(err);
+            if (data.status === 'success') {
+                btn.innerHTML = `<i class="fas fa-check"></i> ${data.message}`;
+                btn.classList.replace('bg-blue-600', 'bg-green-600');
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1500);
+                return true;
+            } else if (data.status === 'pending') {
                 if (!silent) {
-                    alert('Network error occurred.');
+                    alert(data.message);
                     btn.disabled = false;
                     btn.innerHTML = originalText;
                 }
                 return false;
+            } else {
+                if (!silent) {
+                    alert('Error: ' + data.message);
+                    btn.disabled = false;
+                    btn.innerHTML = originalText;
+                }
+                return true;
             }
+        } catch (err) {
+            console.error(err);
+            if (!silent) {
+                alert('Network error occurred.');
+                btn.disabled = false;
+                btn.innerHTML = originalText;
+            }
+            return false;
         }
-    </script>
-</body>
-
-</html>
+    }
+</script>
+{% endblock %}
